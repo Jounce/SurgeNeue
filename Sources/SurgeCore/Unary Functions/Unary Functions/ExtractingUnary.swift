@@ -40,3 +40,17 @@ public struct ExtractingUnary<Scalar> {
         }
     }
 }
+
+extension UnsafeMemoryAccessible {
+    @inlinable @inline(__always)
+    public func extract<Dst>(
+        _ function: ExtractingUnary<Element>,
+        into dst: inout Dst
+    )
+    where
+        Dst: UnsafeMutableMemoryAccessible,
+        Element == Dst.Element
+    {
+        function.extract(self, into: &dst)
+    }
+}

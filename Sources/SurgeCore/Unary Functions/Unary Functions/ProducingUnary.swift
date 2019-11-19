@@ -57,3 +57,16 @@ where
         }
     }
 }
+
+extension UnsafeMemoryAccessible {
+    @inlinable @inline(__always)
+    public func produce<Out>(
+        _ function: ProducingUnary<Element, Out>
+    ) -> Out
+    where
+        Out: RangeReplaceableCollection & UnsafeMutableMemoryAccessible,
+        Out.Element == Element
+    {
+        function.produce(self)
+    }
+}

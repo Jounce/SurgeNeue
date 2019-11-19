@@ -39,3 +39,12 @@ public struct MutatingUnary<Scalar> {
         }
     }
 }
+
+extension UnsafeMutableMemoryAccessible {
+    @inlinable @inline(__always)
+    public mutating func mutate(
+        _ function: MutatingUnary<Element>
+    ) {
+        function.mutate(&self)
+    }
+}
