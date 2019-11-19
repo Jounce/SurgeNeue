@@ -18,8 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-
 extension Array: UnsafeMemoryAccessible {
     @inlinable
     public func withUnsafeMemory<Result>(

@@ -18,8 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-
 /// Protocol for mutable collections that can be accessed via `UnsafeMutableMemory`
 public protocol UnsafeMutableMemoryAccessible: UnsafeMemoryAccessible {
     mutating func withUnsafeMutableMemory<Result>(
