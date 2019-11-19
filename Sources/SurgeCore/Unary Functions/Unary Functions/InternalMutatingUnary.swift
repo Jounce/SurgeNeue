@@ -1,4 +1,4 @@
-public struct MutatingUnary<Scalar> {
+public struct InternalMutatingUnary<Scalar> {
     public typealias LhsMemory = UnsafeMutableMemory<Scalar>
 
     public typealias Closure = (LhsMemory) -> ()
@@ -14,20 +14,19 @@ public struct MutatingUnary<Scalar> {
     }
 
     @inlinable @inline(__always)
-    public init(_ extracting: ExtractingUnary<Scalar>) {
-        self.init { dst in
-            let lhs = UnsafeMemory(dst)
-            extracting.closure(lhs, dst)
+    public init(externalMutating: ExternalMutatingUnary<Scalar>) {
+        self.closure = { dst in
+            externalMutating.apply(UnsafeMemory(dst), into: dst)
         }
     }
 
     @inlinable @inline(__always)
-    public func mutate(_ lhs: LhsMemory) {
+    public func apply(_ lhs: LhsMemory) {
         self.closure(lhs)
     }
 
     @inlinable @inline(__always)
-    public func mutate<Lhs>(
+    public func apply<Lhs>(
         _ lhs: inout Lhs
     )
     where
@@ -35,16 +34,16 @@ public struct MutatingUnary<Scalar> {
         Lhs.Element == Scalar
     {
         lhs.withUnsafeMutableMemory { lhs in
-            self.mutate(lhs)
+            self.apply(lhs)
         }
     }
 }
 
 extension UnsafeMutableMemoryAccessible {
     @inlinable @inline(__always)
-    public mutating func mutate(
-        _ function: MutatingUnary<Element>
+    public mutating func apply(
+        mutating: InternalMutatingUnary<Element>
     ) {
-        function.mutate(&self)
+        mutating.apply(&self)
     }
 }

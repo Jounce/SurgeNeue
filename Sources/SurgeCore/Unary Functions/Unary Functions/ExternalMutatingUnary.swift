@@ -1,4 +1,4 @@
-public struct ExtractingUnary<Scalar> {
+public struct ExternalMutatingUnary<Scalar> {
     public typealias LhsMemory = UnsafeMemory<Scalar>
     public typealias DstMemory = UnsafeMutableMemory<Scalar>
 
@@ -15,7 +15,7 @@ public struct ExtractingUnary<Scalar> {
     }
 
     @inlinable @inline(__always)
-    public func extract(
+    public func apply(
         _ lhs: LhsMemory,
         into dst: DstMemory
     ) {
@@ -23,7 +23,7 @@ public struct ExtractingUnary<Scalar> {
     }
 
     @inlinable @inline(__always)
-    public func extract<Lhs, Dst>(
+    public func apply<Lhs, Dst>(
         _ lhs: Lhs,
         into dst: inout Dst
     )
@@ -35,7 +35,7 @@ public struct ExtractingUnary<Scalar> {
     {
         lhs.withUnsafeMemory { lhs in
             dst.withUnsafeMutableMemory { dst in
-                self.extract(lhs, into: dst)
+                self.apply(lhs, into: dst)
             }
         }
     }
@@ -43,14 +43,14 @@ public struct ExtractingUnary<Scalar> {
 
 extension UnsafeMemoryAccessible {
     @inlinable @inline(__always)
-    public func extract<Dst>(
-        _ function: ExtractingUnary<Element>,
-        into dst: inout Dst
+    public func apply<Dst>(
+        into dst: inout Dst,
+        mutating: ExternalMutatingUnary<Element>
     )
     where
         Dst: UnsafeMutableMemoryAccessible,
         Element == Dst.Element
     {
-        function.extract(self, into: &dst)
+        mutating.apply(self, into: &dst)
     }
 }

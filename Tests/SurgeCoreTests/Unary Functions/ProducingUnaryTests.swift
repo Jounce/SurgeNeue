@@ -2,7 +2,7 @@ import XCTest
 
 @testable import SurgeCore
 
-final class ProducingUnaryTests: XCTestCase {
+final class ExternalUnaryTests: XCTestCase {
     func test__init() {
         typealias Scalar = Float
         typealias Lhs = [Scalar]
@@ -10,33 +10,33 @@ final class ProducingUnaryTests: XCTestCase {
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
 
-        let producing = ProducingUnary<Scalar, Out> { lhs in
+        let external = ExternalUnary<Scalar, Out> { lhs in
             lhs.map { $0 * 2.0 }
         }
 
-        let actual = producing.produce(lhs)
+        let actual = external.produce(lhs)
 
         let expected: Lhs = lhs.map { $0 * 2 }
 
         XCTAssertEqual(actual, expected)
     }
 
-    func test__init_extracting() {
+    func test__init_externalMutating() {
         typealias Scalar = Float
         typealias Lhs = [Scalar]
         typealias Out = [Scalar]
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
 
-        let extracting = ExtractingUnary<Scalar> { lhs, dst in
+        let externalMutating = ExternalMutatingUnary<Scalar> { lhs, dst in
             for index in 0..<lhs.count {
                 dst[index] = lhs[index] * 2.0
             }
         }
 
-        let producing = ProducingUnary<Scalar, Out>(extracting)
+        let external = ExternalUnary<Scalar, Out>(externalMutating)
 
-        let actual = producing.produce(lhs)
+        let actual = external.produce(lhs)
 
         let expected: Lhs = lhs.map { $0 * 2 }
 
@@ -50,15 +50,15 @@ final class ProducingUnaryTests: XCTestCase {
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
 
-        let mutating = MutatingUnary<Scalar> { lhs in
+        let internalMutating = InternalMutatingUnary<Scalar> { lhs in
             for index in 0..<lhs.count {
                 lhs[index] *= 2.0
             }
         }
 
-        let producing = ProducingUnary<Scalar, Out>(mutating)
+        let external = ExternalUnary<Scalar, Out>(internalMutating)
 
-        let actual = producing.produce(lhs)
+        let actual = external.produce(lhs)
 
         let expected: Lhs = lhs.map { $0 * 2 }
 
@@ -67,7 +67,7 @@ final class ProducingUnaryTests: XCTestCase {
 
     static var allTests = [
         ("test__init", test__init),
-        ("test__init_extracting", test__init_extracting),
+        ("test__init_externalMutating", test__init_externalMutating),
         ("test__init_mutating", test__init_mutating),
     ]
 }

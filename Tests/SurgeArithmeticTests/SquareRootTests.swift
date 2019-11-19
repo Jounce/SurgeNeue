@@ -4,129 +4,176 @@ import XCTest
 @testable import SurgeArithmetic
 
 final class SquareRootTests: XCTestCase {
-    func test__extract__float() {
+    // MARK: - External Mutating
+
+    func test__externalMutating__float() {
         typealias Scalar = Float
-        typealias Lhs = [Scalar]
-        typealias Dst = [Scalar]
+        typealias Lhs = Array<Scalar>
+        typealias Dst = ContiguousArray<Scalar>
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
-        var actual: Dst = Array(repeating: 0.0, count: lhs.count)
+        var actual: Dst = .init(repeating: 0.0, count: lhs.count)
 
-        lhs.extract(.squareRoot(), into: &actual)
+        lhs.apply(into: &actual, mutating: .squareRoot())
 
-        let expected: Lhs = lhs.map { sqrt($0) }
+        let expected: Dst = .init(lhs.map { sqrt($0) })
 
         XCTAssertEqual(actual, expected)
     }
 
-    func test__extract__double() {
+    func test__externalMutating__double() {
         typealias Scalar = Double
-        typealias Lhs = [Scalar]
-        typealias Dst = [Scalar]
+        typealias Lhs = Array<Scalar>
+        typealias Dst = ContiguousArray<Scalar>
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
-        var actual: Dst = Array(repeating: 0.0, count: lhs.count)
+        var actual: Dst = .init(repeating: 0.0, count: lhs.count)
 
-        lhs.extract(.squareRoot(), into: &actual)
+        lhs.apply(into: &actual, mutating: .squareRoot())
 
-        let expected: Lhs = lhs.map { sqrt($0) }
+        let expected: Dst = .init(lhs.map { sqrt($0) })
 
         XCTAssertEqual(actual, expected)
     }
 
-    func test__extract__generic() {
+    func test__externalMutating__generic() {
         typealias Scalar = Float
-        typealias Lhs = [Scalar]
-        typealias Dst = [Scalar]
+        typealias Lhs = Array<Scalar>
+        typealias Dst = ContiguousArray<Scalar>
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
-        var actual: Dst = Array(repeating: 0.0, count: lhs.count)
+        var actual: Dst = .init(repeating: 0.0, count: lhs.count)
 
-        lhs.extract(unsafeGeneric(.squareRoot()), into: &actual)
+        lhs.apply(into: &actual, mutating: unsafeGeneric(.squareRoot()))
 
-        let expected: Lhs = lhs.map { sqrt($0) }
+        let expected: Dst = .init(lhs.map { sqrt($0) })
 
         XCTAssertEqual(actual, expected)
     }
 
-    func test__mutate__float() {
+    // MARK: - External
+
+    func test__external__float() {
         typealias Scalar = Float
-        typealias Lhs = [Scalar]
-        typealias Dst = [Scalar]
+        typealias Lhs = Array<Scalar>
+        typealias Out = ContiguousArray<Scalar>
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
-        var actual: Dst = lhs
+        let actual: Out = lhs.apply(as: Out.self, .squareRoot())
 
-        actual.mutate(.squareRoot())
-
-        let expected: Lhs = lhs.map { sqrt($0) }
+        let expected: Out = .init(lhs.map { sqrt($0) })
 
         XCTAssertEqual(actual, expected)
     }
 
-    func test__mutate__double() {
+    func test__external__double() {
         typealias Scalar = Double
-        typealias Lhs = [Scalar]
-        typealias Dst = [Scalar]
+        typealias Lhs = Array<Scalar>
+        typealias Out = ContiguousArray<Scalar>
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
-        var actual: Dst = lhs
+        let actual: Out = lhs.apply(as: Out.self, .squareRoot())
 
-        actual.mutate(.squareRoot())
-
-        let expected: Lhs = lhs.map { sqrt($0) }
+        let expected: Out = .init(lhs.map { sqrt($0) })
 
         XCTAssertEqual(actual, expected)
     }
 
-    func test__mutate__generic() {
+    func test__external__generic() {
         typealias Scalar = Float
-        typealias Lhs = [Scalar]
-        typealias Dst = [Scalar]
+        typealias Lhs = Array<Scalar>
+        typealias Out = ContiguousArray<Scalar>
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
-        var actual: Dst = lhs
+        let actual: Out = lhs.apply(as: Out.self, .squareRoot())
 
-        actual.mutate(unsafeGeneric(.squareRoot()))
-
-        let expected: Lhs = lhs.map { sqrt($0) }
+        let expected: Out = .init(lhs.map { sqrt($0) })
 
         XCTAssertEqual(actual, expected)
     }
 
-    func test__produce__float() {
+    // MARK: - Internal Mutating
+
+    func test__internalMutating__float() {
         typealias Scalar = Float
-        typealias Lhs = [Scalar]
-        typealias Out = [Scalar]
+        typealias Lhs = Array<Scalar>
+        typealias Dst = Lhs
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
-        let actual: Out = lhs.produce(.squareRoot())
+        var actual = lhs
+
+        actual.apply(mutating: .squareRoot())
 
         let expected: Lhs = lhs.map { sqrt($0) }
 
         XCTAssertEqual(actual, expected)
     }
 
-    func test__produce__double() {
+    func test__internalMutating__double() {
         typealias Scalar = Double
-        typealias Lhs = [Scalar]
-        typealias Out = [Scalar]
+        typealias Lhs = Array<Scalar>
+        typealias Dst = Lhs
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
-        let actual: Out = lhs.produce(.squareRoot())
+        var actual = lhs
+
+        actual.apply(mutating: .squareRoot())
 
         let expected: Lhs = lhs.map { sqrt($0) }
 
         XCTAssertEqual(actual, expected)
     }
 
-    func test__produce__generic() {
+    func test__internalMutating__generic() {
         typealias Scalar = Float
-        typealias Lhs = [Scalar]
-        typealias Out = [Scalar]
+        typealias Lhs = Array<Scalar>
+        typealias Dst = Lhs
 
         let lhs: Lhs = (0..<10).map { Scalar($0) }
-        let actual: Out = lhs.produce(.squareRoot())
+        var actual = lhs
+
+        actual.apply(mutating: unsafeGeneric(.squareRoot()))
+
+        let expected: Lhs = lhs.map { sqrt($0) }
+
+        XCTAssertEqual(actual, expected)
+    }
+
+    // MARK: - Internal
+
+    func test__internal__float() {
+        typealias Scalar = Float
+        typealias Lhs = Array<Scalar>
+        typealias Out = Lhs
+
+        let lhs: Lhs = (0..<10).map { Scalar($0) }
+        let actual: Out = lhs.apply(.squareRoot())
+
+        let expected: Lhs = lhs.map { sqrt($0) }
+
+        XCTAssertEqual(actual, expected)
+    }
+
+    func test__internal__double() {
+        typealias Scalar = Double
+        typealias Lhs = Array<Scalar>
+        typealias Out = Lhs
+
+        let lhs: Lhs = (0..<10).map { Scalar($0) }
+        let actual: Out = lhs.apply(.squareRoot())
+
+        let expected: Lhs = lhs.map { sqrt($0) }
+
+        XCTAssertEqual(actual, expected)
+    }
+
+    func test__internal__generic() {
+        typealias Scalar = Float
+        typealias Lhs = Array<Scalar>
+        typealias Out = Lhs
+
+        let lhs: Lhs = (0..<10).map { Scalar($0) }
+        let actual: Out = lhs.apply(.squareRoot())
 
         let expected: Lhs = lhs.map { sqrt($0) }
 
@@ -134,16 +181,20 @@ final class SquareRootTests: XCTestCase {
     }
 
     static var allTests = [
-        ("test__extract__float", test__extract__float),
-        ("test__extract__double", test__extract__double),
-        ("test__extract__generic", test__extract__generic),
+        ("test__externalMutating__float", test__externalMutating__float),
+        ("test__externalMutating__double", test__externalMutating__double),
+        ("test__externalMutating__generic", test__externalMutating__generic),
 
-        ("test__mutate__float", test__mutate__float),
-        ("test__mutate__double", test__mutate__double),
-        ("test__mutate__generic", test__mutate__generic),
+        ("test__external__float", test__external__float),
+        ("test__external__double", test__external__double),
+        ("test__external__generic", test__external__generic),
 
-        ("test__produce__float", test__produce__float),
-        ("test__produce__double", test__produce__double),
-        ("test__produce__generic", test__produce__generic),
+        ("test__internalMutating__float", test__internalMutating__float),
+        ("test__internalMutating__double", test__internalMutating__double),
+        ("test__internalMutating__generic", test__internalMutating__generic),
+
+        ("test__internal__float", test__internal__float),
+        ("test__internal__double", test__internal__double),
+        ("test__internal__generic", test__internal__generic),
     ]
 }
