@@ -28,7 +28,7 @@ public protocol UnsafeMutableMemoryAccessible: UnsafeMemoryAccessible {
 }
 
 /// Mutable memory region.
-public struct UnsafeMutableMemory<Element>: Collection {
+public struct UnsafeMutableMemory<Element>: MutableCollection {
     public typealias Index = Int
 
     @inlinable @inline(__always)
@@ -86,7 +86,12 @@ public struct UnsafeMutableMemory<Element>: Collection {
 
     @inlinable @inline(__always)
     public subscript(position: Int) -> Element {
-        return self.pointer[position]
+        get {
+            return self.pointer[position]
+        }
+        nonmutating set {
+            self.pointer[position] = newValue
+        }
     }
 
     @inlinable

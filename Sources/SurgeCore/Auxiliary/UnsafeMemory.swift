@@ -56,6 +56,16 @@ public struct UnsafeMemory<Element>: Collection {
 
     @inlinable
     public init(
+        _ mutable: UnsafeMutableMemory<Element>
+    ) {
+        self.pointer = UnsafePointer(mutable.pointer)
+        self.count = mutable.count
+        self.capacity = mutable.capacity
+        self.stride = mutable.stride
+    }
+
+    @inlinable
+    public init(
         pointer: UnsafePointer<Element>,
         count: Int,
         capacity: Int? = nil,
