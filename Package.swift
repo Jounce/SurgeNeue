@@ -12,6 +12,12 @@ let package = Package(
                 "SurgeCore",
             ]
         ),
+        .library(
+            name: "SurgeArithmetic",
+            targets: [
+                "SurgeArithmetic",
+            ]
+        ),
     ],
     dependencies: [
     ],
@@ -21,10 +27,22 @@ let package = Package(
             dependencies: [
             ]
         ),
+        .target(
+            name: "SurgeArithmetic",
+            dependencies: [
+                "SurgeCore",
+            ]
+        ),
         .testTarget(
             name: "SurgeCoreTests",
             dependencies: [
                 "SurgeCore",
+            ]
+        ),
+        .testTarget(
+            name: "SurgeArithmeticTests",
+            dependencies: [
+                "SurgeArithmetic",
             ]
         ),
     ]
