@@ -17,7 +17,7 @@ final class ExternalMutatingUnaryTests: XCTestCase {
             }
         }
 
-        externalMutating.extract(lhs, into: &actual)
+        externalMutating.apply(lhs, into: &actual)
 
         let expected: Lhs = lhs.map { $0 * 2 }
 

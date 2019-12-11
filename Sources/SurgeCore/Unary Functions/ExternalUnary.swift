@@ -1,14 +1,20 @@
 public struct ExternalUnary<Scalar> {
     public typealias LhsMemory = UnsafeMemory<Scalar>
-    public typealias Mutating = ExternalMutatingUnary<Scalar>
-    public typealias Closure = Mutating.Closure
+    public typealias ExternalMutating = ExternalMutatingUnary<Scalar>
 
     @usableFromInline
-    internal let mutating: Mutating
+    internal let externalMutating: ExternalMutating
 
     @inlinable @inline(__always)
-    public init(mutating: Mutating) {
-        self.mutating = mutating
+    public init(
+        _ closure: @escaping ExternalMutating.Closure
+    ) {
+        self.init(externalMutating: .init(closure)) 
+    }
+
+    @inlinable @inline(__always)
+    public init(externalMutating: ExternalMutating) {
+        self.externalMutating = externalMutating
     }
 
     @inlinable @inline(__always)
@@ -23,7 +29,7 @@ public struct ExternalUnary<Scalar> {
         Out.Element == Scalar
     {
         var out = Out(lhs)
-        self.mutating.apply(lhs, into: &out)
+        self.externalMutating.apply(lhs, into: &out)
         return out
     }
 }

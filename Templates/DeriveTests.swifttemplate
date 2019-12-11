@@ -1,0 +1,55 @@
+<%- includeFile("Blueprints.swift") -%>
+<%_ for blueprint in blueprints(from: types) { -%>
+// sourcery:file:<%= blueprint.name %>+Blueprint
+import XCTest
+
+@testable import SurgeCore
+<%_ if let framework = argument["framework"] { -%>
+@testable import <%= framework %>
+<%_ } -%>
+
+final class <%= blueprint.name %>Tests: XCTestCase {
+    <%_ for (functionType, scalarTypes) in blueprint.baseTypes { -%>
+    // MARK: - <%= functionType.name %>
+        <%_ for scalarType in scalarTypes { -%>
+
+    func test<%= functionType.name %><%= scalarType.name %>() {
+        typealias Scalar = <%= scalarType.name %>
+        typealias Input = Array<Scalar>
+        typealias Output = ContiguousArray<Scalar>
+
+        let function = <%= blueprint.name %>.<%= functionType.functionName %><%= scalarType.name %>
+        let testFunction = <%= blueprint.name %>Test.<%= functionType.functionName %><%= scalarType.name %>Test
+
+        let input: Input = (0..<10).map { Scalar($0) }
+
+            <%_ switch functionType { -%>
+            <%_ case .unary(.externalMutating): -%>
+        var actual: Output = .init(repeating: 0.0, count: input.count)
+        input.apply(into: &actual, mutating: .init(function))
+
+        var expected: Output = .init(repeating: 0.0, count: input.count)
+        input.apply(into: &expected, mutating: .init(testFunction))
+            <%_ case .unary(.external): break -%>
+        let actual = input.apply(as: Output.self, .init(function))
+
+        let expected = input.apply(as: Output.self, .init(testFunction))
+            <%_ case .unary(.internalMutating): break -%>
+        var actual: Input = input
+        actual.apply(mutating: .init(function))
+
+        var expected: Input = input
+        expected.apply(mutating: .init(testFunction))
+            <%_ case .unary(.internal): break -%>
+        let actual: Input = input.apply(.init(function))
+
+        let expected: Input = input.apply(.init(testFunction))
+            <%_ } -%>
+
+        XCTAssertEqual(actual, expected)
+    }
+        <%_ } -%>
+    <%_ } -%>
+}
+// sourcery:end
+<%_ } -%>

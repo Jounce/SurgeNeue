@@ -1,6 +1,6 @@
-# SurgeCore
+# SurgeNeue
 
-**SurgeCore** is an experimental blank-slate re-implementation of the lowest-level building blocks of the **Surge** project.
+**SurgeNeue** is an experimental blank-slate re-implementation of the lowest-level building blocks of the **Surge** project.
 
 ☣️ CAUTION: You absolutely do NOT want to depend on this project under ANY circumstances! ☢️
 
@@ -23,7 +23,7 @@ The idea behind this project is to split Surge up into smaller Swift Packages, w
 
 ## Architecture
 
-**SurgeCore** makes heavy use of the [**Protocol Witness**](https://www.youtube.com/watch?v=3BVkbWXcFS4) pattern.
+**SurgeNeue** makes heavy use of the [**Protocol Witness**](https://www.youtube.com/watch?v=3BVkbWXcFS4) pattern.
 
 ## Goals
 

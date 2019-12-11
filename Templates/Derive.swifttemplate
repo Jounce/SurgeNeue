@@ -1,0 +1,24 @@
+<%- includeFile("Blueprints.swift") -%>
+<%_ for blueprint in blueprints(from: types) { -%>
+// sourcery:file:<%= blueprint.name %>+Derive
+import SurgeCore
+    <%_ for deriveType in blueprint.deriveTypes { -%>
+
+// MARK: - <%= deriveType.name %>
+        <%_ for (functionType, scalarTypes) in blueprint.baseTypes { -%>
+            <%_ for scalarType in scalarTypes { -%>
+
+extension <%= deriveType.name %>
+where
+    Scalar == <%= scalarType.name %>
+{
+    @inlinable @inline(__always)
+    public static func <%= blueprint.functionName %>() -> <%= deriveType.name %> {
+        return .init(<%= blueprint.name %>.<%= functionType.functionName %><%= scalarType.name %>)
+    }
+}
+            <%_ } -%>
+        <%_ } -%>
+    <%_ } -%>
+// sourcery:end
+<%_ } -%>

@@ -87,7 +87,7 @@ where
 {
     precondition((Scalar.self == Float.self) || (Scalar.self == Double.self))
 
-    return .init(mutating: .init { genericLhs, genericDst in
+    return .init(externalMutating: .init { genericLhs, genericDst in
         switch Scalar.self {
         case is Float.Type:
             let lhs = unsafeBitCast(genericLhs, to: UnsafeMemory<Float>.self)
@@ -137,7 +137,7 @@ where
 {
     precondition((Scalar.self == Float.self) || (Scalar.self == Double.self))
 
-    return .init(mutating: .init { genericLhs in
+    return .init(internalMutating: .init { genericLhs in
         switch Scalar.self {
         case is Float.Type:
             let lhs = unsafeBitCast(genericLhs, to: UnsafeMutableMemory<Float>.self)

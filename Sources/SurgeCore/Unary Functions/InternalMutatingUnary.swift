@@ -7,17 +7,24 @@ public struct InternalMutatingUnary<Scalar> {
     internal let closure: Closure
 
     @inlinable @inline(__always)
+    public init(externalMutating: ExternalMutatingUnary<Scalar>) {
+        self.init { dst in
+            externalMutating.apply(UnsafeMemory(dst), into: dst)
+        }
+    }
+
+    @inlinable @inline(__always)
+    public init(
+        _ closure: @escaping ExternalMutatingUnary<Scalar>.Closure
+    ) {
+        self.init(externalMutating: .init(closure))
+    }
+
+    @inlinable @inline(__always)
     public init(
         _ closure: @escaping Closure
     ) {
         self.closure = closure
-    }
-
-    @inlinable @inline(__always)
-    public init(externalMutating: ExternalMutatingUnary<Scalar>) {
-        self.closure = { dst in
-            externalMutating.apply(UnsafeMemory(dst), into: dst)
-        }
     }
 
     @inlinable @inline(__always)

@@ -17,7 +17,7 @@ final class MutatingUnaryTests: XCTestCase {
             }
         }
 
-        internalMutating.mutate(&actual)
+        internalMutating.apply(&actual)
 
         let expected: Lhs = lhs.map { $0 * 2 }
 
@@ -38,9 +38,9 @@ final class MutatingUnaryTests: XCTestCase {
             }
         }
 
-        let internalMutating = InternalMutatingUnary(externalMutating)
+        let internalMutating = InternalMutatingUnary<Scalar>(externalMutating: externalMutating)
 
-        internalMutating.mutate(&actual)
+        internalMutating.apply(&actual)
 
         let expected: Lhs = lhs.map { $0 * 2.0 }
 
