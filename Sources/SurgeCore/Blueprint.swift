@@ -45,13 +45,23 @@ where
     }
 }
 
+public protocol ExternalMutatingUnaryBlueprintTest: SurgeExternalMutatingUnaryBlueprint {
+
+}
+
 public protocol ExternalMutatingUnaryFloatBlueprint: SurgeExternalMutatingUnaryBlueprint {
     associatedtype ExternalMutatingUnaryFloatTest: ExternalMutatingUnaryFloatTestBlueprint
 
     static func externalMutatingUnaryFloat(_ lhs: Lhs<Float>, into dst: Dst<Float>)
 }
 
-public protocol ExternalMutatingUnaryFloatTestBlueprint: SurgeExternalMutatingUnaryBlueprint {
+public protocol ExternalMutatingUnaryFloatTestBlueprint: ExternalMutatingUnaryBlueprintTest {
+    associatedtype LhsFloatTest
+    associatedtype DstFloatTest
+
+    static func lhsFloat() -> LhsFloatTest
+    static func dstFloat() -> DstFloatTest
+
     static func externalMutatingUnaryFloatTest(_ lhs: Lhs<Float>, into dst: Dst<Float>)
 }
 
@@ -61,6 +71,12 @@ public protocol ExternalMutatingUnaryDoubleBlueprint: SurgeExternalMutatingUnary
     static func externalMutatingUnaryDouble(_ lhs: Lhs<Double>, into dst: Dst<Double>)
 }
 
-public protocol ExternalMutatingUnaryDoubleTestBlueprint: SurgeExternalMutatingUnaryBlueprint {
+public protocol ExternalMutatingUnaryDoubleTestBlueprint: ExternalMutatingUnaryBlueprintTest {
+    associatedtype LhsDoubleTest
+    associatedtype DstDoubleTest
+
+    static func lhsDouble() -> LhsDoubleTest
+    static func dstDouble() -> DstDoubleTest
+
     static func externalMutatingUnaryDoubleTest(_ lhs: Lhs<Double>, into dst: Dst<Double>)
 }

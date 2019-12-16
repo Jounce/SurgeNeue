@@ -14,21 +14,23 @@ final class <%= blueprint.name %>Tests: XCTestCase {
         <%_ for scalarType in scalarTypes { -%>
 
     func test<%= functionType.name %><%= scalarType.name %>() {
+        typealias Function = <%= blueprint.name %>
+        typealias Fixture = <%= blueprint.name %>Test
         typealias Scalar = <%= scalarType.name %>
         typealias Input = Array<Scalar>
         typealias Output = ContiguousArray<Scalar>
 
-        let function = <%= blueprint.name %>.<%= functionType.functionName %><%= scalarType.name %>
-        let testFunction = <%= blueprint.name %>Test.<%= functionType.functionName %><%= scalarType.name %>Test
+        let function = Function.<%= functionType.functionName %><%= scalarType.name %>
+        let testFunction = Fixture.<%= functionType.functionName %><%= scalarType.name %>Test
 
-        let input: Input = (0..<10).map { Scalar($0) }
+        let input: Input = Fixture.lhs()
 
             <%_ switch functionType { -%>
             <%_ case .unary(.externalMutating): -%>
-        var actual: Output = .init(repeating: 0.0, count: input.count)
+        var actual: Output = Fixture.dst()
         input.apply(into: &actual, mutating: .init(function))
 
-        var expected: Output = .init(repeating: 0.0, count: input.count)
+        var expected: Output = Fixture.dst()
         input.apply(into: &expected, mutating: .init(testFunction))
             <%_ case .unary(.external): break -%>
         let actual = input.apply(as: Output.self, .init(function))

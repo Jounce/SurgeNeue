@@ -54,22 +54,84 @@ extension SquareRoot: ExternalMutatingUnaryDoubleBlueprint {
 }
 
 @usableFromInline
-struct SquareRootTest {}
+struct SquareRootTest {
+    static let count: Int = 10
 
-extension SquareRootTest: ExternalMutatingUnaryFloatTestBlueprint {
     @usableFromInline
-    static func externalMutatingUnaryFloatTest(_ lhs: Lhs<Float>, into dst: Dst<Float>) {
+    typealias LhsTest<Scalar> = Array<Scalar>
+
+    @usableFromInline
+    typealias DstTest<Scalar> = ContiguousArray<Scalar>
+
+    @usableFromInline
+    static func lhs<Scalar>() -> LhsTest<Scalar>
+    where
+        Scalar: FloatingPoint
+    {
+        (0..<self.count).map { Scalar($0) }
+    }
+
+    @usableFromInline
+    static func dst<Scalar>() -> DstTest<Scalar>
+    where
+        Scalar: ExpressibleByFloatLiteral
+    {
+        .init(repeating: 0.0, count: self.count)
+    }
+
+    @usableFromInline
+    static func externalMutatingUnaryTest<Scalar>(_ lhs: Lhs<Scalar>, into dst: Dst<Scalar>)
+    where
+        Scalar: FloatingPoint
+    {
         for i in 0..<lhs.count {
             dst[i] = lhs[i].squareRoot()
         }
     }
 }
 
+extension SquareRootTest: ExternalMutatingUnaryFloatTestBlueprint {
+    @usableFromInline
+    typealias LhsFloatTest = LhsTest<Float>
+
+    @usableFromInline
+    typealias DstFloatTest = DstTest<Float>
+
+    @usableFromInline
+    static func lhsFloat() -> LhsFloatTest {
+        lhs()
+    }
+
+    @usableFromInline
+    static func dstFloat() -> DstFloatTest {
+        dst()
+    }
+
+    @usableFromInline
+    static func externalMutatingUnaryFloatTest(_ lhs: Lhs<Float>, into dst: Dst<Float>) {
+        externalMutatingUnaryTest(lhs, into: dst)
+    }
+}
+
 extension SquareRootTest: ExternalMutatingUnaryDoubleTestBlueprint {
     @usableFromInline
+    typealias LhsDoubleTest = LhsTest<Double>
+
+    @usableFromInline
+    typealias DstDoubleTest = DstTest<Double>
+
+    @usableFromInline
+    static func lhsDouble() -> LhsDoubleTest {
+        lhs()
+    }
+
+    @usableFromInline
+    static func dstDouble() -> DstDoubleTest {
+        dst()
+    }
+
+    @usableFromInline
     static func externalMutatingUnaryDoubleTest(_ lhs: Lhs<Double>, into dst: Dst<Double>) {
-        for i in 0..<lhs.count {
-            dst[i] = lhs[i].squareRoot()
-        }
+        externalMutatingUnaryTest(lhs, into: dst)
     }
 }

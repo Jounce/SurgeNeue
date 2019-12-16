@@ -10,38 +10,42 @@ final class MeanSquaresTests: XCTestCase {
     // MARK: - ExternalMutatingUnary
 
     func testExternalMutatingUnaryDouble() {
+        typealias Function = MeanSquares
+        typealias Fixture = MeanSquaresTest
         typealias Scalar = Double
         typealias Input = Array<Scalar>
         typealias Output = ContiguousArray<Scalar>
 
-        let function = MeanSquares.externalMutatingUnaryDouble
-        let testFunction = MeanSquaresTest.externalMutatingUnaryDoubleTest
+        let function = Function.externalMutatingUnaryDouble
+        let testFunction = Fixture.externalMutatingUnaryDoubleTest
 
-        let input: Input = (0..<10).map { Scalar($0) }
+        let input: Input = Fixture.lhs()
 
-        var actual: Output = .init(repeating: 0.0, count: input.count)
+        var actual: Output = Fixture.dst()
         input.apply(into: &actual, mutating: .init(function))
 
-        var expected: Output = .init(repeating: 0.0, count: input.count)
+        var expected: Output = Fixture.dst()
         input.apply(into: &expected, mutating: .init(testFunction))
 
         XCTAssertEqual(actual, expected)
     }
 
     func testExternalMutatingUnaryFloat() {
+        typealias Function = MeanSquares
+        typealias Fixture = MeanSquaresTest
         typealias Scalar = Float
         typealias Input = Array<Scalar>
         typealias Output = ContiguousArray<Scalar>
 
-        let function = MeanSquares.externalMutatingUnaryFloat
-        let testFunction = MeanSquaresTest.externalMutatingUnaryFloatTest
+        let function = Function.externalMutatingUnaryFloat
+        let testFunction = Fixture.externalMutatingUnaryFloatTest
 
-        let input: Input = (0..<10).map { Scalar($0) }
+        let input: Input = Fixture.lhs()
 
-        var actual: Output = .init(repeating: 0.0, count: input.count)
+        var actual: Output = Fixture.dst()
         input.apply(into: &actual, mutating: .init(function))
 
-        var expected: Output = .init(repeating: 0.0, count: input.count)
+        var expected: Output = Fixture.dst()
         input.apply(into: &expected, mutating: .init(testFunction))
 
         XCTAssertEqual(actual, expected)
