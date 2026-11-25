@@ -27,8 +27,10 @@ extension MeanSquares: ExternalMutatingUnaryFloatBlueprint {
             "destination doesn't have enough capacity to store the results"
         )
 
+        guard !dst.isEmpty else { return }
+
         let stride: vDSP_Stride = numericCast(lhs.stride)
-        let count: vDSP_Length = numericCast(dst.count)
+        let count: vDSP_Length = numericCast(lhs.count)
         vDSP_measqv(lhs.pointer, stride, dst.pointer, count)
     }
 }
@@ -49,8 +51,10 @@ extension MeanSquares: ExternalMutatingUnaryDoubleBlueprint {
             "destination doesn't have enough capacity to store the results"
         )
 
+        guard !dst.isEmpty else { return }
+
         let stride: vDSP_Stride = numericCast(lhs.stride)
-        let count: vDSP_Length = numericCast(dst.count)
+        let count: vDSP_Length = numericCast(lhs.count)
         vDSP_measqvD(lhs.pointer, stride, dst.pointer, count)
     }
 }
